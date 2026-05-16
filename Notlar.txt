@@ -1,0 +1,131 @@
+Bu notlar Python,sqlite3 kullanarak crud işlemlerini yapmayı öğrenirken kendim için almış olduğum  notlardır.
+
+Bu notlarla giriş seviyesindeki bir yazılımcı bile mantığını kavrayabilir.
+
+
+
+--------------Başlangıç-----------------
+
+https://www.youtube.com/watch?v=ncwGmoLoTq0
+
+
+Class nedir?
+
+Şablon.
+
+Mesela araba fabrikası düşün.
+
+Henüz ortada araba yok.
+
+Ama:
+
+nasıl üretileceği belli
+özellikleri belli
+
+class kullanmazsak proje ilerlediğinde kod karmaşası oluşur.
+
+-----------------------------db_manager.py------------------------------------
+**def __init__(self, db_name):
+Bu kısım pythondaki contructor kısımdır. yani bir nesne oluştuğu zaman  ilk çalışan fonksiyonlardır...
+
+
+db = DatabaseManager("database/raynet-manager.db") Örneğin bu komut DatabaseManager sınıfını kullnarak yeni bir nesne oluşturuyor. Nesnenin özelliği olarakta (özellik olarak db_name beklediğimiz için)
+databasemisin ismini veriyoruz...
+
+
+**def __init__(self, db_name): 
+BURADAKİ SELF NE?
+
+oluşan nesnenin kendisi demek.
+----------------------------
+
+self.connection = sqlite3.connect(db_name)
+
+Bu kod satırı diyor ki :
+
+Bu nesnenin(self) bağlantısını sqlite3(kütüphane)'de bulunan connect metodu ile Nesneyi oluşturuken aldığımız database'i birleştir diyor.
+
+----------------------------------
+
+self.cursor = self.connection.cursor()
+
+Şimdi burası önemli.
+
+Cursor nedir?
+Cursor: SQL komutlarını pythonda çalıştıran araç
+cursorı bir kere oluşturman yeterli
+
+connection bağlantıyı temsil eder
+cursor işlemleri yapar
+----------------------------
+
+**self.cursor.execute(...)
+SQL komutunu SQLite’a gönderiyor.
+
+----------------------------
+
+**self.connection.commit()
+commit neden var?
+Çünkü SQLite: işlemleri önce geçici olarak tutar
+
+commit yapmazsak?
+Veri görünürde eklenir.Ama program kapanınca gider.çünkü kaydedilmedi.
+
+--------------------------
+
+fetchall()
+
+SQL’den gelen sonuçları alır.
+
+ÖRNK:
+[
+ (1, "Spotify", "Music", 5),
+ (2, "Discord", "Social", 3)
+]
+
+her satır bir kayıt
+SQLite satırları tuple olarak verir
+
+--------------------------------------------
+class Person:
+
+    def __init__(self):
+
+        self.name = "Ege"
+Burada name nerede tanımlandı?
+Hiçbir yerde.
+
+Peki nasıl oluştu?
+self.name = "Ege"
+şunu yapıyor:
+
+“Bu nesnenin içine name diye yeni özellik oluştur.”  Python’da Özellikler Dinamiktir
+
+Python diyor ki:
+“Tamam kardeşim, o zaman oluşturuyorum.”
+Şimdi Nesne Oluşunca
+
+p = Person()
+
+artık p.name vardır.
+-----------------------------------------
+
+def update_apps(self,app_id,new_app_name,new_vendor_id):
+        query = """
+        UPDATE Applications
+        SET app_name = ? , vendor_id = ?
+        WHERE app_id = ?
+        """
+        self.db.cursor.execute(query,(new_app_name,new_vendor_id,app_id,)) 
+        self.db.connection.commit()
+
+Ben ekstradan güncelleme metodu ekledim. Burada önemli detay  Burada ? işaretlerinde ki değerlerin gelme sırasına dikkat et 
+
+Yukarıda name , vendor_id, id olarak gittiği için execute komutuna da o sırayla yazmalısın.
+
+
+
+------------------------------------------------------
+
+
+        
